@@ -10,7 +10,7 @@ class Config(object):
     #telegram user session str for 4gb limit
     SESSION_STRING = os.environ.get("SESSION_STRING", "")
     #tg bot token
-    BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
+    BOT_TOKEN = os.environ.get("BOT_TOKEN", "7883714062:AAFoQy27Bcc_WwtIw57MvicmWPrO96kcnbg")
     #api id and hash get it from my.telegram.org
     API_ID = int(os.environ.get("API_ID", ))
     API_HASH = os.environ.get("API_HASH", "")
