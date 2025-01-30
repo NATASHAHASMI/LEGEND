@@ -12,7 +12,7 @@ from config import Config
 from rvdb import mydb
 from pytz import timezone
 from psutil import virtual_memory, cpu_percent
-from rvdrive import GoogleDriveHelper
+from rvdrive import *
 from util import *
 from rvripper import *
 from logging.handlers import RotatingFileHandler
