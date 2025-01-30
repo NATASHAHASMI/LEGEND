@@ -1,3 +1,11 @@
+# Use it your own risk
+# The Developer will not be responsible for any misuse of this bot/script
+# This is only for educational purposes, dont misuse it
+# If you use this bot/script, you accept that you are responsible for your own actions
+import dns.resolver 
+dns.resolver.default_resolver=dns.resolver.Resolver(configure=False) 
+dns.resolver.default_resolver.nameservers=['8.8.8.8']#!/usr/bin/env python3
+
 import io
 import string 
 from pyrogram import Client, filters, idle
@@ -12,7 +20,7 @@ from config import Config
 from rvdb import mydb
 from pytz import timezone
 from psutil import virtual_memory, cpu_percent
-from rvdrive import *
+from rvdrive import GoogleDriveHelper
 from util import *
 from rvripper import *
 from logging.handlers import RotatingFileHandler
@@ -54,8 +62,8 @@ if Config.SESSION_STRING:
         no_updates = True,
         max_concurrent_transmissions=200
     )
-else:
-    TGUser = None
+
+TGUser = None
 
 USER_DATA = ExpiringDict(max_len=1000, max_age_seconds=60*60)
 # Bot stats
@@ -66,8 +74,8 @@ CHECK_ONCE = []
 
 ST1 = [ 
     [
-        InlineKeyboardButton(text="Updates Channel", url="https://t.me/RoyalToonsOfficial"),
-        InlineKeyboardButton(text="Support Group", url="https://t.me/rv2006rv")
+        InlineKeyboardButton(text="Updates Channel", url="https://t.me/jv"),
+        InlineKeyboardButton(text="Support Grp", url="https://t.me/jv")
     ],
     [
         InlineKeyboardButton(f"About", callback_data="About"),
@@ -90,8 +98,8 @@ PLANS_TEXT = '''**Here You will find all of our Premium Plans:-**
     🟢 **Plan 2:-**
         **Plan Name:-** `Starter`
         **Price:- **
-              **USD:-** `2$`
-              **INR:-** `99₹`
+              **USD:-** `9$`
+              **INR:-** `299₹`
         **DRM Video Limit:-** `100 Videos`
         **validity:-** `30 days`
 
@@ -99,7 +107,7 @@ PLANS_TEXT = '''**Here You will find all of our Premium Plans:-**
         **Plan Name:-** `Standard`
         **Price:-** 
               **USD:-** `13$`
-              **INR:-** `199₹`
+              **INR:-** `899₹`
         **DRM Video Limit:-** `Unlimited Videos`
         **validity:-** `30 days`
 
@@ -112,15 +120,14 @@ PLANS_TEXT = '''**Here You will find all of our Premium Plans:-**
 Payment Method:- Binance
 For **INR:-** PhonePay, PayTm, UPI
 
-**Contact  @rv2006rv For Subscription**'''
+**Contact  @JV For Subscription**'''
 
 HELP_TEXT = """Here You can find all available Commands:-
-    /start - To start The Bot
-    /dl - To Download From Hotstar
-    /help - Show Help & Features
-    /ul_mode - See available features
-    /plans - See available plans
-    /usage - See your current usage
+    /start :- To start The Bot
+    /help :- Show Help & Features
+    /ul_mode :- See available features
+    /plans :- See available plans
+    /usage :- See your current usage
     /otts - To know available otts
     /about - about the bot
     /getthumb - get save thumb
@@ -131,14 +138,16 @@ HELP_TEXT = """Here You can find all available Commands:-
 Just send me any DRM links from supported sites to download That I can also Upload To Google Drive..."""
 
 
-ABOUT_TEXT = """<b>🤖 My Name - [Rv's HS DL](https://t.me/RvHSDLRoBot)
-🏷️ Bot Version - v1.1.2
-📝 Language - [Python](https://python.org/)
-📚 Library - [Pyrogram](http://Pyrogram.org/)
-📡 Hosted on - [Heroku](https://www.heroku.com/)
-👨‍💻 Developer - [Rv](https://t.me/rv2006rv)
-📢 Updates Channel - [RoyalToons](https://t.me/RoyalToonsOfficial)
-🕵️ Buy Subscription - [Rv](https://t.me/rv2006rv)</b>"""
+ABOUT_TEXT = """**🄳🅁🄼 🄳🄾🅆🄽🄻🄾🄳🄴 🄱🄾🅃
+
+  ➺ My Name  : HS Download Bot
+  ➺ Version      :  `v1.0.0`
+  ➺ Language  : `English`
+  ➺ Owner        : `JV`
+  ➺ Release     : `India`
+  ➺ Developer  : @JV
+
+╚════════✧❁✧════════➩"""
 
 async def filter_subscription(_, __, m):
     chkUser = await is_subscribed(m.from_user.id)
@@ -147,7 +156,7 @@ async def filter_subscription(_, __, m):
     if chkUser:
         return True
     await mydb.add_user(m.from_user.id)
-    await m.reply_text("❎ You do not have a subscription\n\n📞 Contact us to buy a subscription [Rv](https://t.me/rv2006rv)")
+    await m.reply_text("❎ You do not have a subscription\n\n📞 Contact us to buy a subscription [Sadiya](https://t.me/JV)")
     return False
 
 static_auth_filter = filters.create(filter_subscription)
@@ -166,7 +175,7 @@ async def callback(_, cb: CallbackQuery):
     if cb.data == "plans":
        await cb.edit_message_text(text=PLANS_TEXT, reply_markup=InlineKeyboardMarkup(ST1), disable_web_page_preview=True)
     if cb.data == "ContactUs":
-       await cb.edit_message_text(text=f"**📞 Contact [Rv](https://t.me/rv2006rv)**", reply_markup=InlineKeyboardMarkup(ST1), disable_web_page_preview=True)
+       await cb.edit_message_text(text=f"**📞 Contact [Jv](https://t.me/jv)**", reply_markup=InlineKeyboardMarkup(ST1), disable_web_page_preview=True)
         
 
 @TGBot.on_message(filters.command("sub") & filters.user(Config.OWNER_ID))
@@ -178,7 +187,7 @@ async def tg_subget_Handler(bot: Client, message: Message):
     msg_ = await get_subscription(user_id)
     await message.reply_text(msg_)
 
-@TGBot.on_message(filters.command(["ott2", "otts2"]))
+@TGBot.on_message(filters.command(["ott", "otts"]))
 async def tg_subget_Handler(bot: Client, message: Message):
     await message.reply_text("""DRM Downloder Bot
 
@@ -237,7 +246,7 @@ async def get_subscription(user_id):
 
 ⬆️ If you want to increase the subscription then see the plan now and contact us admin
 
-  **🥰 @rv2006rv Contact owner for updating subscription.**
+  **🥰 @JV Contact owner for updating subscription.**
 
                **Have a Nice day 😊** """
     else:
@@ -369,14 +378,20 @@ async def start_handler(bot: Client, message: Message):
 
 @TGBot.on_message(filters.command("start"))
 async def start_handler(bot: Client, message: Message):
+    print("hello")
     await mydb.add_user(message.from_user.id)
-    await message.reply_text(text=f"""<b>Hello👋 {message.from_user.mention} I am one and only DRM Downloader Bot on Telegram.
+    await message.reply_text(text=f"""**Hello👋 {message.from_user.mention} I am one and only DRM Downloader Bot on Telegram.
 
 You can use me to Download DRM protected links to Telegram ⤵️
 
-Here I support Direct DRM links of Hotstar
+Here I support Direct DRM links of Zee5, Hotstar etc..................
 
-If you found any issue please contact Support @rv2006rv</b>""", reply_markup=InlineKeyboardMarkup(ST1))
+I can also DRM protected links transloaded from @JV 
+
+If you found any issue please contact Support @JV**
+
+
+**Bot Uptime:**  `{strftime("hours:%H minutes:%M and seconds:%S" , gmtime(time() - BOT_START_TIME))} ago`""", reply_markup=InlineKeyboardMarkup(ST1))
                    
 
 async def upload_to_gdrive(bot, input_str, sts_msg, message):
@@ -460,7 +475,7 @@ async def video_handler(bot: Client, query: CallbackQuery):
         if drm_client:
             list_audios = USER_DATA[query.from_user.id][key]["audios"]
             drm_client = USER_DATA[query.from_user.id][key]["client"]
-            jvname = USER_DATA[query.from_user.id][key]["rvname"]
+            jvname = USER_DATA[query.from_user.id][key]["jvname"]
             file_pth = USER_DATA[query.from_user.id][key]["folder"]
             file_pth = os.path.join(Config.TEMP_DIR, file_pth)
             await query.message.edit("⏱ Please wait downloading in progress ⤵️")
@@ -552,7 +567,7 @@ async def drm_dl_client(update, MpdUrl, command, sts_msg):
         USER_DATA[update.from_user.id][randStr]["audios"] = []
         USER_DATA[update.from_user.id][randStr]["audios_count"] = len(user_choice_list)
         USER_DATA[update.from_user.id][randStr]["folder"] = user_fol
-        USER_DATA[update.from_user.id][randStr]["rvname"] = title
+        USER_DATA[update.from_user.id][randStr]["jvname"] = title
         my_buttons = create_buttons(user_choice_list)
         await update.reply_text(f"**🔉 Choose Audios for**\n📂 **Filename**: `{title}`: **", reply_markup=my_buttons)
         await sts_msg.delete()
@@ -724,13 +739,13 @@ async def tg_uploader(input_str, user_id, sts_msg):
 
 async def StartBot():
     await TGBot.start()
-    if TGUser:
-        await TGUser.start()
+ #   if TGUser:
+#        await TGUser.start()
     print("----------Bot Started----------")
     await idle()
     await TGBot.stop()
-    if TGUser:
-        await TGUser.stop()
+  #  if TGUser:
+   #     await TGUser.stop()
     print("----------Bot Stopped----------")
     print("--------------BYE!-------------")
 
