@@ -28,3 +28,4 @@ expiringdict
 tenacity
 unidecode
 pyopenssl
+jvdrive
